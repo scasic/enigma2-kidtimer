@@ -4,8 +4,8 @@
 Simlified version of E2 KiddyTimer plugin. 
 There is no GUI configuration for this plugin. Channel list and timer value are hardcoded:
 
-TIMELIMIT
+TIMELIMIT\
 Max duration in seconds
 
-CHANNELS 
+CHANNELS\
 List of channels to be tracked
