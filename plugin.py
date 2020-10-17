@@ -7,8 +7,10 @@ from enigma import eTimer
 import time, datetime
 from Screens.InputBox import PinInput
 
+TIMELIMIT=5400
+CHANNELS=["1:0:1:2777:444:1:C00000:0:0:0:", "1:0:16:328:8:70:168AFFB:0:0:0:", "1:0:16:71B:12:70:1680000:0:0:0:", "1:0:16:336:8:70:168AFFB:0:0:0:", "1:0:19:6594:9:70:1680000:0:0:0:", "1:0:16:71B:12:70:1680000:0:0:0:", "1:0:16:2C4:7:70:1680000:0:0:0:","1:0:16:32E:8:70:168AFFB:0:0:0:", "1:0:16:2C5:7:70:1680000:0:0:0:","1:0:19:371A:E:70:1680000:0:0:0:","1:0:16:2BF:7:70:1680000:0:0:0:","1:0:16:520:D:70:1680000:0:0:0:","1:0:16:193:4:70:1680000:0:0:0:","1:0:16:7A:1:70:1680000:0:0:0:","1:0:16:4AB0:13:70:1680000:0:0:0:","1:0:16:197:4:70:1680000:0:0:0:","1:0:16:1A4:4:70:1680000:0:0:0:","1:0:16:1AC:4:70:1680000:0:0:0:"]
 config.plugins.KidTimer = ConfigSubsection()
-config.plugins.KidTimer.remainingTime = ConfigInteger(default=5400)
+config.plugins.KidTimer.remainingTime = ConfigInteger(default=TIMELIMIT)
 config.plugins.KidTimer.day = ConfigInteger(default=20200101)
 
 class KidTimerScreen(Screen):
@@ -32,7 +34,7 @@ class KidTimer():
         self.session = None 
         self.dialog = None
         self.channel = None
-        self.payChannels = ["1:0:1:2777:444:1:C00000:0:0:0:", "1:0:16:328:8:70:168AFFB:0:0:0:", "1:0:16:71B:12:70:1680000:0:0:0:", "1:0:16:336:8:70:168AFFB:0:0:0:", "1:0:19:6594:9:70:1680000:0:0:0:", "1:0:16:71B:12:70:1680000:0:0:0:", "1:0:16:2C4:7:70:1680000:0:0:0:","1:0:16:32E:8:70:168AFFB:0:0:0:", "1:0:16:2C5:7:70:1680000:0:0:0:","1:0:19:371A:E:70:1680000:0:0:0:","1:0:16:2BF:7:70:1680000:0:0:0:","1:0:16:520:D:70:1680000:0:0:0:","1:0:16:193:4:70:1680000:0:0:0:","1:0:16:7A:1:70:1680000:0:0:0:","1:0:16:4AB0:13:70:1680000:0:0:0:","1:0:16:197:4:70:1680000:0:0:0:","1:0:16:1A4:4:70:1680000:0:0:0:","1:0:16:1AC:4:70:1680000:0:0:0:"]
+        self.channels = CHANNELS
         self.loopTimer=eTimer()
         self.loopTimer.callback.append(self.checkChannel)
         self.remainingTime = config.plugins.KidTimer.remainingTime.getValue()
@@ -51,7 +53,7 @@ class KidTimer():
         if not result:
             pass
         else:
-            self.remainingTime=5400
+            self.remainingTime=TIMELIMIT
             print "oooooo2: ", self.channel
             NavigationInstance.instance.playService(self.channel)
     
@@ -62,7 +64,7 @@ class KidTimer():
         if self.day != timestamp:
             self.day = config.plugins.KidTimer.day.value = timestamp
             config.plugins.KidTimer.day.save()
-            self.remainingTime=5400
+            self.remainingTime=TIMELIMIT
             print "rem5: ", self.remainingTime
 
         currentChannel = NavigationInstance.instance.getCurrentlyPlayingServiceReference()
@@ -70,7 +72,7 @@ class KidTimer():
         print "loop channel:", self.channel
         print "conf: ", config.plugins.KidTimer.remainingTime.getValue()
 
-        if currentChannel is not None and currentChannel.toString() in self.payChannels:
+        if currentChannel is not None and currentChannel.toString() in self.channels:
             self.channel = currentChannel
             if self.remainingTime <= 0:
                 NavigationInstance.instance.stopService()
